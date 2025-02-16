@@ -3,204 +3,131 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Modern Search Site</title>
-  <!-- Подключение шрифтов Google -->
-  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
-  <!-- AOS CSS для анимаций -->
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <title>Поиск по CSV</title>
   <style>
-    /* Сброс стилей */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Roboto', sans-serif;
-      background-color: #121212;
-      color: #e0e0e0;
-      line-height: 1.6;
-    }
-    header {
-      background: #1e1e1e;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      margin: 0;
       padding: 20px;
+    }
+    h1 {
       text-align: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+      margin-bottom: 20px;
     }
-    header h1 { font-size: 2.5rem; margin-bottom: 10px; }
-    nav a {
-      color: #e0e0e0;
-      margin: 0 15px;
-      text-decoration: none;
-      font-size: 1.1rem;
-      transition: color 0.3s;
+    .search-container {
+      text-align: center;
+      margin-bottom: 20px;
     }
-    nav a:hover { color: #ff9800; }
-    main {
-      padding: 40px 20px;
-      max-width: 1000px;
-      margin: 0 auto;
+    input[type="text"] {
+      padding: 10px;
+      font-size: 16px;
+      width: 300px;
+      margin-right: 10px;
     }
-    .search-container { text-align: center; margin-bottom: 40px; }
-    .search-container h2 { margin-bottom: 20px; }
-    .search-container input[type="text"] {
-      width: 60%;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 5px;
-      font-size: 1rem;
-      outline: none;
-      transition: box-shadow 0.3s;
-    }
-    .search-container input[type="text"]:focus { box-shadow: 0 0 10px #ff9800; }
-    .search-container button {
+    button {
       padding: 10px 20px;
-      margin-left: 10px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
       border: none;
-      border-radius: 5px;
-      background-color: #ff9800;
-      color: #121212;
-      font-size: 1rem;
       cursor: pointer;
-      transition: background-color 0.3s;
     }
-    .search-container button:hover { background-color: #e68900; }
-    .results { margin-top: 20px; }
+    button:hover {
+      background-color: #45a049;
+    }
+    #results {
+      margin-top: 30px;
+    }
     .result-item {
-      background: #1e1e1e;
-      margin-bottom: 15px;
-      padding: 15px;
+      background-color: #fff;
+      padding: 10px;
+      margin-bottom: 10px;
       border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeInUp 0.5s forwards;
-    }
-    @keyframes fadeInUp {
-      to { opacity: 1; transform: translateY(0); }
-    }
-    section { margin-bottom: 40px; }
-    section h2 { margin-bottom: 15px; font-size: 2rem; text-align: center; }
-    section p { font-size: 1rem; text-align: center; max-width: 800px; margin: 0 auto; }
-    footer {
-      background: #1e1e1e;
-      text-align: center;
-      padding: 20px;
-      font-size: 0.9rem;
-    }
-    @media (max-width: 768px) {
-      header h1 { font-size: 2rem; }
-      nav a { margin: 0 10px; }
-      .search-container input[type="text"] { width: 80%; }
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     }
   </style>
 </head>
 <body>
-  <header data-aos="fade-down">
-    <h1>Modern Search Site</h1>
-    <nav>
-      <a href="#search">Поиск</a>
-      <a href="#about">О сайте</a>
-      <a href="#contact">Контакты</a>
-    </nav>
-  </header>
 
-  <main>
-    <!-- Раздел поиска -->
-    <section id="search" data-aos="fade-up">
-      <div class="search-container">
-        <h2>Поиск по CSV базе</h2>
-        <input type="text" id="searchQuery" placeholder="Введите запрос...">
-        <button onclick="performSearch()">Искать</button>
-      </div>
-      <div class="results" id="results">
-        <!-- Результаты поиска появятся здесь -->
-      </div>
-    </section>
+  <h1>Поиск по базе данных CSV</h1>
 
-    <!-- Раздел "О сайте" -->
-    <section id="about" data-aos="fade-up">
-      <h2>О сайте</h2>
-      <p>Сайт осуществляет поиск по CSV базе, расположенной в корне репозитория GitHub. Поскольку GitHub Pages не поддерживает directory listing, список файлов указан вручную.</p>
-    </section>
+  <div class="search-container">
+    <input type="text" id="searchQuery" placeholder="Введите запрос...">
+    <button onclick="performSearch()">Искать</button>
+  </div>
 
-    <!-- Раздел контактов -->
-    <section id="contact" data-aos="fade-up">
-      <h2>Контакты</h2>
-      <p>Если у вас есть вопросы, напишите нам на: <a href="mailto:example@example.com" style="color: #ff9800;">example@example.com</a></p>
-    </section>
-  </main>
+  <div id="results"></div>
 
-  <footer data-aos="fade-up">
-    <p>&copy; 2025 Modern Search Site. Все права защищены.</p>
-  </footer>
+  <!-- Подключение PapaParse -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
-  <!-- Подключение AOS JavaScript -->
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
-    AOS.init();
-  </script>
-  <!-- Подключение библиотеки PapaParse для парсинга CSV -->
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
-  <!-- Подключение библиотеки jschardet для определения кодировки -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jschardet/2.1.1/jschardet.min.js"></script>
-  <!-- Скрипт для поиска по CSV базе -->
-  <script>
-    // Функция для загрузки и парсинга CSV файла с определением кодировки
-    function fetchCSV(fileUrl) {
-      return fetch(fileUrl)
-        .then(response => response.arrayBuffer())
-        .then(buffer => {
-          const uint8View = new Uint8Array(buffer);
-          const detected = jschardet.detect(uint8View);
-          let encoding = 'utf-8';
-          if (detected && detected.encoding) {
-            encoding = detected.encoding;
-          }
-          const decoder = new TextDecoder(encoding);
-          const csvText = decoder.decode(buffer);
-          return Papa.parse(csvText, { header: true, skipEmptyLines: true }).data;
-        });
-    }
-
     function performSearch() {
       const query = document.getElementById('searchQuery').value.toLowerCase();
       const resultsContainer = document.getElementById('results');
       resultsContainer.innerHTML = '<p>Идет поиск...</p>';
 
-      // Указываем CSV файл big_part3.csv, расположенный в корне репозитория
-      const csvFiles = ['big_part3.csv'];
+      // Список кодировок для тестирования
+      const encodings = ['utf-8', 'windows-1251', 'iso-8859-1', 'shift-jis', 'utf-16'];
 
-      Promise.all(csvFiles.map(file => fetchCSV(file)))
-        .then(resultsArray => {
-          let allData = [];
-          resultsArray.forEach(data => { allData = allData.concat(data); });
-          // Поиск по всем полям записей
-          const filtered = allData.filter(item =>
-            Object.values(item).some(value =>
-              value && value.toString().toLowerCase().includes(query)
-            )
-          );
-          if (filtered.length === 0) {
-            resultsContainer.innerHTML = '<p>Ничего не найдено.</p>';
-          } else {
-            resultsContainer.innerHTML = '';
-            filtered.forEach((item, index) => {
-              const resultItem = document.createElement('div');
-              resultItem.classList.add('result-item');
-              resultItem.style.animationDelay = (index * 0.1) + 's';
-              let content = '';
-              for (let key in item) {
-                if (item.hasOwnProperty(key)) {
-                  content += `<strong>${key}:</strong> ${item[key]}<br>`;
-                }
-              }
-              resultItem.innerHTML = content;
-              resultsContainer.appendChild(resultItem);
+      // Попробуем каждую кодировку
+      const fileUrl = 'https://username.github.io/repository/big_part3.csv'; // Путь к файлу на GitHub
+
+      let decoder;
+      let found = false;
+
+      encodings.forEach(encoding => {
+        if (found) return;  // Если уже нашли подходящую кодировку, не продолжаем
+
+        fetch(fileUrl)
+          .then(response => response.arrayBuffer())
+          .then(buffer => {
+            decoder = new TextDecoder(encoding, {fatal: true});  // Декодирование в указанной кодировке
+            let decodedText;
+            try {
+              decodedText = decoder.decode(buffer);
+            } catch (error) {
+              console.error(`Ошибка при декодировании с кодировкой ${encoding}:`, error);
+              return; // Если не удалось декодировать, пробуем следующую кодировку
+            }
+
+            // Парсим CSV после успешного декодирования
+            const data = Papa.parse(decodedText, { header: true }).data;
+            const filtered = data.filter(item => {
+              return Object.values(item).some(value =>
+                value && value.toString().toLowerCase().includes(query)
+              );
             });
-          }
-        })
-        .catch(error => {
-          resultsContainer.innerHTML = '<p>Ошибка при загрузке данных.</p>';
-          console.error(error);
-        });
+
+            // Выводим результаты поиска
+            if (filtered.length === 0) {
+              resultsContainer.innerHTML = '<p>Ничего не найдено.</p>';
+            } else {
+              resultsContainer.innerHTML = '';
+              filtered.forEach((item, index) => {
+                const resultItem = document.createElement('div');
+                resultItem.classList.add('result-item');
+                let content = '';
+                for (let key in item) {
+                  if (item.hasOwnProperty(key)) {
+                    content += `<strong>${key}:</strong> ${item[key]}<br>`;
+                  }
+                }
+                resultItem.innerHTML = content;
+                resultsContainer.appendChild(resultItem);
+              });
+            }
+
+            found = true;  // Завершаем цикл после успешного парсинга
+          })
+          .catch(error => {
+            console.error(`Ошибка при загрузке файла с кодировкой ${encoding}:`, error);
+          });
+      });
     }
   </script>
+
 </body>
 </html>
