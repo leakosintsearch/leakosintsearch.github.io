@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Modern Search Site</title>
+  <!-- Подключение шрифтов Google -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+  <!-- AOS CSS для анимаций -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <style>
+    /* Сброс стилей */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #121212;
+      color: #e0e0e0;
+      line-height: 1.6;
+    }
+    header {
+      background: #1e1e1e;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    }
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    nav a {
+      color: #e0e0e0;
+      margin: 0 15px;
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: color 0.3s;
+    }
+    nav a:hover {
+      color: #ff9800;
+    }
+    main {
+      padding: 40px 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .search-container {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .search-container h2 {
+      margin-bottom: 20px;
+    }
+    .search-container input[type="text"] {
+      width: 60%;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      outline: none;
+      transition: box-shadow 0.3s;
+    }
+    .search-container input[type="text"]:focus {
+      box-shadow: 0 0 10px #ff9800;
+    }
+    .search-container button {
+      padding: 10px 20px;
+      margin-left: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: #ff9800;
+      color: #121212;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .search-container button:hover {
+      background-color: #e68900;
+    }
+    .results {
+      margin-top: 20px;
+    }
+    .result-item {
+      background: #1e1e1e;
+      margin-bottom: 15px;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.5s forwards;
+    }
+    /* Анимация появления для результатов */
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    section {
+      margin-bottom: 40px;
+    }
+    section h2 {
+      margin-bottom: 15px;
+      font-size: 2rem;
+      text-align: center;
+    }
+    section p {
+      font-size: 1rem;
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    footer {
+      background: #1e1e1e;
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9rem;
+    }
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2rem;
+      }
+      nav a {
+        margin: 0 10px;
+      }
+      .search-container input[type="text"] {
+        width: 80%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header data-aos="fade-down">
+    <h1>Modern Search Site</h1>
+    <nav>
+      <a href="#search">Поиск</a>
+      <a href="#about">О сайте</a>
+      <a href="#contact">Контакты</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Раздел поиска -->
+    <section id="search" data-aos="fade-up">
+      <div class="search-container">
+        <h2>Поиск по базе данных</h2>
+        <input type="text" id="searchQuery" placeholder="Введите запрос...">
+        <button onclick="performSearch()">Искать</button>
+      </div>
+      <div class="results" id="results">
+        <!-- Результаты поиска появятся здесь -->
+      </div>
+    </section>
+
+    <!-- Раздел "О сайте" -->
+    <section id="about" data-aos="fade-up">
+      <h2>О сайте</h2>
+      <p>Этот сайт использует статическую базу данных (CSV) для поиска информации. Все данные хранятся в одном репозитории с сайтом, а поиск осуществляется на стороне клиента с помощью JavaScript.</p>
+    </section>
+
+    <!-- Раздел контактов -->
+    <section id="contact" data-aos="fade-up">
+      <h2>Контакты</h2>
+      <p>Если у вас есть вопросы, напишите нам на: <a href="mailto:example@example.com" style="color: #ff9800;">example@example.com</a></p>
+    </section>
+  </main>
+
+  <footer data-aos="fade-up">
+    <p>&copy; 2025 Modern Search Site. Все права защищены.</p>
+  </footer>
+
+  <!-- Подключение AOS JavaScript -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init();
+  </script>
+  <!-- Подключение библиотеки PapaParse для парсинга CSV -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+  <!-- Скрипт для поиска по CSV -->
+  <script>
+    function performSearch() {
+      const query = document.getElementById('searchQuery').value.toLowerCase();
+      const resultsContainer = document.getElementById('results');
+      resultsContainer.innerHTML = '<p>Идет поиск...</p>';
+
+      // Файл data.csv должен быть в корневой папке репозитория
+      fetch('data.csv')
+        .then(response => response.text())
+        .then(csvText => {
+          const data = Papa.parse(csvText, { header: true }).data;
+          // Фильтруем данные по введенному запросу (ищем по всем полям)
+          const filtered = data.filter(item => {
+            return Object.values(item).some(value =>
+              value && value.toString().toLowerCase().includes(query)
+            );
+          });
+
+          // Вывод результатов поиска
+          if (filtered.length === 0) {
+            resultsContainer.innerHTML = '<p>Ничего не найдено.</p>';
+          } else {
+            resultsContainer.innerHTML = '';
+            filtered.forEach((item, index) => {
+              const resultItem = document.createElement('div');
+              resultItem.classList.add('result-item');
+              // Добавляем небольшую задержку для анимации каждого элемента
+              resultItem.style.animationDelay = (index * 0.1) + 's';
+              let content = '';
+              for (let key in item) {
+                if (item.hasOwnProperty(key)) {
+                  content += `<strong>${key}:</strong> ${item[key]}<br>`;
+                }
+              }
+              resultItem.innerHTML = content;
+              resultsContainer.appendChild(resultItem);
+            });
+          }
+        })
+        .catch(error => {
+          resultsContainer.innerHTML = '<p>Ошибка при загрузке данных.</p>';
+          console.error(error);
+        });
+    }
+  </script>
+</body>
+</html>
