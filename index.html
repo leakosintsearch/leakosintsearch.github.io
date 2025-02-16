@@ -10,11 +10,7 @@
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <style>
     /* Сброс стилей */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Roboto', sans-serif;
       background-color: #121212;
@@ -25,12 +21,9 @@
       background: #1e1e1e;
       padding: 20px;
       text-align: center;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
     }
-    header h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-    }
+    header h1 { font-size: 2.5rem; margin-bottom: 10px; }
     nav a {
       color: #e0e0e0;
       margin: 0 15px;
@@ -38,21 +31,14 @@
       font-size: 1.1rem;
       transition: color 0.3s;
     }
-    nav a:hover {
-      color: #ff9800;
-    }
+    nav a:hover { color: #ff9800; }
     main {
       padding: 40px 20px;
       max-width: 1000px;
       margin: 0 auto;
     }
-    .search-container {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-    .search-container h2 {
-      margin-bottom: 20px;
-    }
+    .search-container { text-align: center; margin-bottom: 40px; }
+    .search-container h2 { margin-bottom: 20px; }
     .search-container input[type="text"] {
       width: 60%;
       padding: 10px 15px;
@@ -62,9 +48,7 @@
       outline: none;
       transition: box-shadow 0.3s;
     }
-    .search-container input[type="text"]:focus {
-      box-shadow: 0 0 10px #ff9800;
-    }
+    .search-container input[type="text"]:focus { box-shadow: 0 0 10px #ff9800; }
     .search-container button {
       padding: 10px 20px;
       margin-left: 10px;
@@ -76,43 +60,24 @@
       cursor: pointer;
       transition: background-color 0.3s;
     }
-    .search-container button:hover {
-      background-color: #e68900;
-    }
-    .results {
-      margin-top: 20px;
-    }
+    .search-container button:hover { background-color: #e68900; }
+    .results { margin-top: 20px; }
     .result-item {
       background: #1e1e1e;
       margin-bottom: 15px;
       padding: 15px;
       border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
       opacity: 0;
       transform: translateY(20px);
       animation: fadeInUp 0.5s forwards;
     }
-    /* Анимация появления для результатов */
     @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      to { opacity: 1; transform: translateY(0); }
     }
-    section {
-      margin-bottom: 40px;
-    }
-    section h2 {
-      margin-bottom: 15px;
-      font-size: 2rem;
-      text-align: center;
-    }
-    section p {
-      font-size: 1rem;
-      text-align: center;
-      max-width: 800px;
-      margin: 0 auto;
-    }
+    section { margin-bottom: 40px; }
+    section h2 { margin-bottom: 15px; font-size: 2rem; text-align: center; }
+    section p { font-size: 1rem; text-align: center; max-width: 800px; margin: 0 auto; }
     footer {
       background: #1e1e1e;
       text-align: center;
@@ -120,15 +85,9 @@
       font-size: 0.9rem;
     }
     @media (max-width: 768px) {
-      header h1 {
-        font-size: 2rem;
-      }
-      nav a {
-        margin: 0 10px;
-      }
-      .search-container input[type="text"] {
-        width: 80%;
-      }
+      header h1 { font-size: 2rem; }
+      nav a { margin: 0 10px; }
+      .search-container input[type="text"] { width: 80%; }
     }
   </style>
 </head>
@@ -146,7 +105,7 @@
     <!-- Раздел поиска -->
     <section id="search" data-aos="fade-up">
       <div class="search-container">
-        <h2>Поиск по базе данных</h2>
+        <h2>Поиск по CSV базе</h2>
         <input type="text" id="searchQuery" placeholder="Введите запрос...">
         <button onclick="performSearch()">Искать</button>
       </div>
@@ -158,7 +117,7 @@
     <!-- Раздел "О сайте" -->
     <section id="about" data-aos="fade-up">
       <h2>О сайте</h2>
-      <p>Этот сайт использует статическую базу данных (CSV) для поиска информации. Все данные хранятся в одном репозитории с сайтом, а поиск осуществляется на стороне клиента с помощью JavaScript.</p>
+      <p>Сайт осуществляет поиск по CSV базе, расположенной в корне репозитория GitHub. Поскольку GitHub Pages не поддерживает directory listing, список файлов указан вручную.</p>
     </section>
 
     <!-- Раздел контактов -->
@@ -181,25 +140,21 @@
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
   <!-- Подключение библиотеки jschardet для определения кодировки -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jschardet/2.1.1/jschardet.min.js"></script>
-  <!-- Скрипт для поиска по CSV базам с поддержкой разных кодировок -->
+  <!-- Скрипт для поиска по CSV базе -->
   <script>
     // Функция для загрузки и парсинга CSV файла с определением кодировки
-    function fetchCSV(filePath) {
-      return fetch(filePath)
+    function fetchCSV(fileUrl) {
+      return fetch(fileUrl)
         .then(response => response.arrayBuffer())
         .then(buffer => {
-          // Преобразуем в Uint8Array для анализа
           const uint8View = new Uint8Array(buffer);
           const detected = jschardet.detect(uint8View);
-          // По умолчанию используем 'utf-8', если обнаружить другую кодировку не удалось
           let encoding = 'utf-8';
           if (detected && detected.encoding) {
             encoding = detected.encoding;
           }
-          // Декодируем с использованием определённой кодировки
           const decoder = new TextDecoder(encoding);
           const csvText = decoder.decode(buffer);
-          // Парсим CSV с помощью PapaParse
           return Papa.parse(csvText, { header: true, skipEmptyLines: true }).data;
         });
     }
@@ -209,27 +164,19 @@
       const resultsContainer = document.getElementById('results');
       resultsContainer.innerHTML = '<p>Идет поиск...</p>';
 
-      // Массив путей к CSV файлам. Добавьте сюда все файлы (их можно разместить в репозитории или указать абсолютные URL)
-      const csvFiles = [
-        'data.csv'
-        //, 'data2.csv', 'data3.csv'  // Раскомментируйте и добавьте пути к другим CSV файлам
-      ];
+      // Указываем CSV файл big_part3.csv, расположенный в корне репозитория
+      const csvFiles = ['big_part3.csv'];
 
-      // Загружаем все CSV файлы
       Promise.all(csvFiles.map(file => fetchCSV(file)))
         .then(resultsArray => {
           let allData = [];
-          resultsArray.forEach(data => {
-            allData = allData.concat(data);
-          });
-          // Фильтрация данных по запросу (поиск по всем полям)
-          const filtered = allData.filter(item => {
-            return Object.values(item).some(value =>
+          resultsArray.forEach(data => { allData = allData.concat(data); });
+          // Поиск по всем полям записей
+          const filtered = allData.filter(item =>
+            Object.values(item).some(value =>
               value && value.toString().toLowerCase().includes(query)
-            );
-          });
-
-          // Вывод результатов поиска
+            )
+          );
           if (filtered.length === 0) {
             resultsContainer.innerHTML = '<p>Ничего не найдено.</p>';
           } else {
@@ -237,7 +184,6 @@
             filtered.forEach((item, index) => {
               const resultItem = document.createElement('div');
               resultItem.classList.add('result-item');
-              // Добавляем небольшую задержку для анимации каждого элемента
               resultItem.style.animationDelay = (index * 0.1) + 's';
               let content = '';
               for (let key in item) {
