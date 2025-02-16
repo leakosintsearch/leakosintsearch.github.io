@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Поиск по CSV</title>
+  <title>Поиск а по CSV</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -68,12 +68,9 @@
       const query = document.getElementById('searchQuery').value.toLowerCase();
       const resultsContainer = document.getElementById('results');
       resultsContainer.innerHTML = '<p>Идет поиск...</p>';
-
-      // Список кодировок для тестирования
-      const encodings = ['utf-8', 'windows-1251', 'iso-8859-1', 'shift-jis', 'utf-16'];
-
-      // Попробуем каждую кодировку
-      const fileUrl = 'https://username.github.io/repository/big_part3.csv'; // Путь к файлу на GitHub
+      
+      const fileUrl = 'https://username.github.io/repository/big_part3.csv'; // Укажите правильный путь к файлу на GitHub
+      const encodings = ['utf-8', 'windows-1251', 'iso-8859-1', 'shift-jis', 'utf-16']; // Кодировки для тестирования
 
       let decoder;
       let found = false;
@@ -81,46 +78,51 @@
       encodings.forEach(encoding => {
         if (found) return;  // Если уже нашли подходящую кодировку, не продолжаем
 
+        console.log(`Пробую кодировку: ${encoding}`); // Логируем попытку декодирования
+
         fetch(fileUrl)
           .then(response => response.arrayBuffer())
           .then(buffer => {
-            decoder = new TextDecoder(encoding, {fatal: true});  // Декодирование в указанной кодировке
-            let decodedText;
             try {
-              decodedText = decoder.decode(buffer);
+              decoder = new TextDecoder(encoding, {fatal: true});  // Декодирование в указанной кодировке
+              let decodedText = decoder.decode(buffer);
+
+              console.log(`Успешное декодирование с кодировкой: ${encoding}`); // Логируем успешное декодирование
+
+              // Парсим CSV
+              const data = Papa.parse(decodedText, { header: true }).data;
+              console.log(data); // Логируем данные
+
+              // Фильтруем данные
+              const filtered = data.filter(item => {
+                return Object.values(item).some(value =>
+                  value && value.toString().toLowerCase().includes(query)
+                );
+              });
+
+              // Выводим результаты
+              if (filtered.length === 0) {
+                resultsContainer.innerHTML = '<p>Ничего не найдено.</p>';
+              } else {
+                resultsContainer.innerHTML = '';
+                filtered.forEach((item, index) => {
+                  const resultItem = document.createElement('div');
+                  resultItem.classList.add('result-item');
+                  let content = '';
+                  for (let key in item) {
+                    if (item.hasOwnProperty(key)) {
+                      content += `<strong>${key}:</strong> ${item[key]}<br>`;
+                    }
+                  }
+                  resultItem.innerHTML = content;
+                  resultsContainer.appendChild(resultItem);
+                });
+              }
+
+              found = true;  // Завершаем цикл после успешного парсинга
             } catch (error) {
               console.error(`Ошибка при декодировании с кодировкой ${encoding}:`, error);
-              return; // Если не удалось декодировать, пробуем следующую кодировку
             }
-
-            // Парсим CSV после успешного декодирования
-            const data = Papa.parse(decodedText, { header: true }).data;
-            const filtered = data.filter(item => {
-              return Object.values(item).some(value =>
-                value && value.toString().toLowerCase().includes(query)
-              );
-            });
-
-            // Выводим результаты поиска
-            if (filtered.length === 0) {
-              resultsContainer.innerHTML = '<p>Ничего не найдено.</p>';
-            } else {
-              resultsContainer.innerHTML = '';
-              filtered.forEach((item, index) => {
-                const resultItem = document.createElement('div');
-                resultItem.classList.add('result-item');
-                let content = '';
-                for (let key in item) {
-                  if (item.hasOwnProperty(key)) {
-                    content += `<strong>${key}:</strong> ${item[key]}<br>`;
-                  }
-                }
-                resultItem.innerHTML = content;
-                resultsContainer.appendChild(resultItem);
-              });
-            }
-
-            found = true;  // Завершаем цикл после успешного парсинга
           })
           .catch(error => {
             console.error(`Ошибка при загрузке файла с кодировкой ${encoding}:`, error);
