@@ -179,20 +179,51 @@
   </script>
   <!-- Подключение библиотеки PapaParse для парсинга CSV -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
-  <!-- Скрипт для поиска по CSV -->
+  <!-- Подключение библиотеки jschardet для определения кодировки -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jschardet/2.1.1/jschardet.min.js"></script>
+  <!-- Скрипт для поиска по CSV базам с поддержкой разных кодировок -->
   <script>
+    // Функция для загрузки и парсинга CSV файла с определением кодировки
+    function fetchCSV(filePath) {
+      return fetch(filePath)
+        .then(response => response.arrayBuffer())
+        .then(buffer => {
+          // Преобразуем в Uint8Array для анализа
+          const uint8View = new Uint8Array(buffer);
+          const detected = jschardet.detect(uint8View);
+          // По умолчанию используем 'utf-8', если обнаружить другую кодировку не удалось
+          let encoding = 'utf-8';
+          if (detected && detected.encoding) {
+            encoding = detected.encoding;
+          }
+          // Декодируем с использованием определённой кодировки
+          const decoder = new TextDecoder(encoding);
+          const csvText = decoder.decode(buffer);
+          // Парсим CSV с помощью PapaParse
+          return Papa.parse(csvText, { header: true, skipEmptyLines: true }).data;
+        });
+    }
+
     function performSearch() {
       const query = document.getElementById('searchQuery').value.toLowerCase();
       const resultsContainer = document.getElementById('results');
       resultsContainer.innerHTML = '<p>Идет поиск...</p>';
 
-      // Файл data.csv должен быть в корневой папке репозитория
-      fetch('data.csv')
-        .then(response => response.text())
-        .then(csvText => {
-          const data = Papa.parse(csvText, { header: true }).data;
-          // Фильтруем данные по введенному запросу (ищем по всем полям)
-          const filtered = data.filter(item => {
+      // Массив путей к CSV файлам. Добавьте сюда все файлы (их можно разместить в репозитории или указать абсолютные URL)
+      const csvFiles = [
+        'data.csv'
+        //, 'data2.csv', 'data3.csv'  // Раскомментируйте и добавьте пути к другим CSV файлам
+      ];
+
+      // Загружаем все CSV файлы
+      Promise.all(csvFiles.map(file => fetchCSV(file)))
+        .then(resultsArray => {
+          let allData = [];
+          resultsArray.forEach(data => {
+            allData = allData.concat(data);
+          });
+          // Фильтрация данных по запросу (поиск по всем полям)
+          const filtered = allData.filter(item => {
             return Object.values(item).some(value =>
               value && value.toString().toLowerCase().includes(query)
             );
